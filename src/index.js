@@ -42,7 +42,7 @@ const accessTokenFilePath = resolve(__dirname, "secrets.txt");
         break;
       }
     }
-    getProjectName(token);
+    getProjectName();
   }
 
   async function createRepository({ token, name = "test-repo" }) {
@@ -94,13 +94,13 @@ const accessTokenFilePath = resolve(__dirname, "secrets.txt");
 
   try {
     if (token) {
-      getProjectName(token);
+      getProjectName();
     }
   } catch (error) {
     await getAccessToken();
   }
 
-  async function getProjectName(token) {
+  async function getProjectName() {
     // get project name
     const { name } = await inquirer.prompt([
       {
