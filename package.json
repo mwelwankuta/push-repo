@@ -1,7 +1,7 @@
 {
-  "name": "init-project",
+  "name": "init-repo",
   "version": "1.0.0",
-  "description": "Quickly create an a project directory connected to GitHub.",
+  "description": "Quickly create an a project directory connected to a GitHub repository.",
   "type": "module",
   "main": "/src/index.js",
   "bin": "/src/index.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mwelwankuta/create-project.git"
+    "url": "git+https://github.com/mwelwankuta/init-repo.git"
   },
   "keywords": [
     "commandline-tool",
@@ -28,7 +28,7 @@
     "open": "^8.4.0"
   },
   "bugs": {
-    "url": "https://github.com/mwelwankuta/create-project/issues"
+    "url": "https://github.com/mwelwankuta/init-repo/issues"
   },
   "publishConfig": {
     "access": "public",
@@ -36,5 +36,5 @@
       "main"
     ]
   },
-  "homepage": "https://github.com/mwelwankuta/create-project#readme"
+  "homepage": "https://github.com/mwelwankuta/init-repo#readme"
 }
