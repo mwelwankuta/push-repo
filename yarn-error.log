@@ -1,0 +1,75 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\Mwelwa\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js login
+
+PATH: 
+  C:\Users\Mwelwa\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\Mwelwa\bin;C:\tools\ruby30\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;C:\Program Files\nodejs;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\Program Files (x86)\Brackets\command;C:\Program Files\Go\bin;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Users\Mwelwa\AppData\Local\Programs\Python\Python39\Scripts;C:\Users\Mwelwa\AppData\Local\Programs\Python\Python39;C:\Users\Mwelwa\AppData\Local\Microsoft\WindowsApps;C:\Users\Mwelwa\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Mwelwa\AppData\Roaming\npm;C:\dart-sdk\bin;C:\xampp\php;C:\geckodriver;C:\xampp\mysql\bin;C:\Program Files (x86)\Vim\vim82\tutor;C:\cmake-3.21.1-windows-x86_64\bin;M:\tools\flutter\bin;C:\Users\Mwelwa\AppData\Local\Android\Sdk\platform-tools;M:\tools\javafx-sdk-11.0.2\bin;C:\Users\Mwelwa\Downloads\jdk-11.0.1\bin;C:\Users\Mwelwa\Downloads\gradle-6.9.1\bin;C:\Users\Mwelwa\Downloads\nvim-win64\Neovim\bin;C:\Users\Mwelwa\go\bin;C:\bin;C:\Users\Mwelwa\AppData\Local\Programs\oh-my-posh\bin;C:\Users\Mwelwa\AppData\Local\Programs\oh-my-posh\themes;C:\Program Files\MongoDB\Server\4.4\bin;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  14.15.4
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: canceled
+      at Interface.<anonymous> (C:\Users\Mwelwa\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:136216:13)
+      at Interface.emit (events.js:315:20)
+      at Interface._ttyWrite (readline.js:875:16)
+      at ReadStream.onkeypress (readline.js:213:10)
+      at ReadStream.emit (events.js:315:20)
+      at emitKeys (internal/readline/utils.js:345:14)
+      at emitKeys.next (<anonymous>)
+      at ReadStream.onData (readline.js:1144:36)
+      at ReadStream.emit (events.js:315:20)
+      at addChunk (internal/streams/readable.js:309:12)
+
+npm manifest: 
+  {
+    "name": "start-repo",
+    "version": "1.0.0",
+    "description": "Quickly create an a project directory connected to a GitHub repository.",
+    "type": "module",
+    "main": "src/index.js",
+    "bin": "src/index.js",
+    "scripts": {
+      "start": "node src/index.js"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/mwelwankuta/init-repo.git"
+    },
+    "keywords": [
+      "commandline-tool",
+      "git",
+      "init",
+      "repository",
+      "project",
+      "create"
+    ],
+    "author": "Mwelwa Nkuta",
+    "license": "MIT",
+    "dependencies": {
+      "inquirer": "^8.2.0",
+      "node-fetch": "^3.1.0",
+      "open": "^8.4.0"
+    },
+    "bugs": {
+      "url": "https://github.com/mwelwankuta/init-repo/issues"
+    },
+    "publishConfig": {
+      "access": "public",
+      "branches": [
+        "main"
+      ]
+    },
+    "homepage": "https://github.com/mwelwankuta/init-repo#readme"
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

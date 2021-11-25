@@ -1,17 +1,26 @@
 #!/usr/bin/env node
-import { readFileSync } from "fs";
-import { join, dirname } from "path";
+import { readFileSync, writeFileSync } from "fs";
+import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 import { exec } from "child_process";
+import { promisify } from "util";
 
 import open from "open";
 import fetch from "node-fetch";
 import inquirer from "inquirer";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const accessTokenFilePath = join(__dirname, "secrets.txt");
+const accessTokenFilePath = resolve(__dirname, "secrets.txt");
 
 (async () => {
+  // get github access token from secrets
+  const file = readFileSync(accessTokenFilePath, {
+    encoding: "utf8",
+    flag: "r",
+  });
+
+  const token = file.split("=")[1];
+
   // fetch user access token
   async function getAccessToken() {
     console.log("Paste your access token to log in ");
@@ -30,12 +39,11 @@ const accessTokenFilePath = join(__dirname, "secrets.txt");
 
       if (token) {
         // write access token to secrets
-        fs.writeFileSync(accessTokenFilePath, `ACCESS_TOKEN=${token}`);
+        writeFileSync(accessTokenFilePath, `ACCESS_TOKEN=${token}`);
         break;
       }
-
-      createRepository({ token, projectName });
     }
+    getProjectName(token);
   }
 
   async function createRepository({ token, name = "test-repo" }) {
@@ -57,21 +65,18 @@ const accessTokenFilePath = join(__dirname, "secrets.txt");
     const data = await response.json();
     const originUrl = `${data.url}.git`;
 
-    const run = `git remote add origin ${originUrl},git branch -M main`;
-    exec(run[0], () => {
-      exec(run[1]);
-    });
+    const run = `git init,git remote add origin ${originUrl},git branch -M main`;
+
+    const init = run.split(",")[0];
+    const remote = run.split(",")[1];
+    const branch = run.split(",")[2];
+
+    exec(init, { cwd: process.cwd() });
+    exec(remote, { cwd: process.cwd() });
+    exec(branch, { cwd: process.cwd() });
 
     console.log(`Successfully created repository ${data.name}`);
   }
-
-  // get github access token from secrets
-  const file = readFileSync(accessTokenFilePath, {
-    encoding: "utf8",
-    flag: "r",
-  });
-
-  const token = file.split("=")[1];
 
   if (!token) {
     // inquirer to get yes or no from user
@@ -88,7 +93,15 @@ const accessTokenFilePath = join(__dirname, "secrets.txt");
     else process.exit();
   }
 
-  if (token) {
+  try {
+    if (token) {
+      getProjectName(token);
+    }
+  } catch (error) {
+    await getAccessToken();
+  }
+
+  async function getProjectName(token) {
     // get project name
     const { name } = await inquirer.prompt([
       {

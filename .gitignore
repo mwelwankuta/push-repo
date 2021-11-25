@@ -1,3 +1,4 @@
 # Dependency directories
 node_modules/
 src/secrets.dev.txt
+.vscode

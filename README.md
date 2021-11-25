@@ -1,4 +1,4 @@
-# init-repo
+# create repo
 
 ## Installation
 
@@ -6,12 +6,12 @@ install package globally
 
 ```
 # install using npm
-npm install -g init-repo
+npm install -g start-repo
 
 # install using yarn
-yarn global add init-repo
+yarn global add start-repo
 ```
 
 ## Usage
 
-run `init-repo project-name` to initialize a new project
+run `start-repo` to initialize a new project
