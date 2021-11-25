@@ -1,6 +1,6 @@
 {
   "name": "start-repo",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Quickly create an a project directory connected to a GitHub repository.",
   "type": "module",
   "main": "src/index.js",
