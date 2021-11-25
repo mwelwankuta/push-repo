@@ -1,0 +1,40 @@
+{
+  "name": "init-project",
+  "version": "1.0.0",
+  "description": "Quickly create an a project directory connected to GitHub.",
+  "type": "module",
+  "main": "/src/index.js",
+  "bin": "/src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwelwankuta/create-project.git"
+  },
+  "keywords": [
+    "commandline-tool",
+    "git",
+    "init",
+    "repository",
+    "project",
+    "create"
+  ],
+  "author": "Mwelwa Nkuta",
+  "license": "MIT",
+  "dependencies": {
+    "inquirer": "^8.2.0",
+    "node-fetch": "^3.1.0",
+    "open": "^8.4.0"
+  },
+  "bugs": {
+    "url": "https://github.com/mwelwankuta/create-project/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "branches": [
+      "main"
+    ]
+  },
+  "homepage": "https://github.com/mwelwankuta/create-project#readme"
+}
