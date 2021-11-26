@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { readFileSync, readdir, writeFileSync, opendir, readdirSync } from "fs";
-import { dirname, resolve } from "path";
+import { readFileSync, writeFileSync, readdirSync } from "fs";
+import { dirname, join, resolve } from "path";
 import { fileURLToPath } from "url";
 import { exec } from "child_process";
 
@@ -9,7 +9,7 @@ import fetch from "node-fetch";
 import inquirer from "inquirer";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const accessTokenFile = resolve(__dirname, "secrets.txt");
+const accessTokenFile = join(__dirname, "secrets.txt");
 
 (async () => {
   const file = readFileSync(accessTokenFile, {
@@ -28,7 +28,7 @@ const accessTokenFile = resolve(__dirname, "secrets.txt");
       },
     ]);
 
-    if (name) return await createRepository({ name, token });
+    if (name) return await createRepository({ name });
 
     console.log("You did not enter a project name");
     process.exit();
@@ -57,17 +57,26 @@ const accessTokenFile = resolve(__dirname, "secrets.txt");
         break;
       }
     }
-    getProjectName(token);
+    getProjectName();
   };
 
-  async function createRepository({ name, token }) {
+  async function createRepository({ name }) {
     console.log("  Creating repository...\n");
+
+    const file = readFileSync(accessTokenFile, {
+      encoding: "utf8",
+      flag: "r",
+    });
+  
+    const token = file.split("=")[1];
+    console.log(token, 'tokenni')
 
     const res = await fetch("https://api.github.com/user/repos", {
       method: "POST",
       body: JSON.stringify({ name }),
       headers: {
         Authorization: `token ${token}`,
+        'Content-Type':"application/json"
       },
     });
 
@@ -76,6 +85,7 @@ const accessTokenFile = resolve(__dirname, "secrets.txt");
     if (error) return console.log(`ERROR: ${statusText}`);
 
     const data = await res.json();
+    console.log(data)
     const originUrl = `https://github.com/${data.owner.login}/${data.name}.git`;
     const cwd = process.cwd();
 
@@ -124,7 +134,7 @@ const accessTokenFile = resolve(__dirname, "secrets.txt");
   }
   
   try {
-    if (token) return getProjectName(token);
+    if (token) return getProjectName();
   } catch (error) {
     await getAccessToken();
   }
