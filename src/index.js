@@ -28,7 +28,7 @@ const accessTokenFile = resolve(__dirname, "secrets.txt");
       },
     ]);
 
-    if (name) return await createRepository(name);
+    if (name) return await createRepository({name, token});
 
     console.log("You did not enter a project name");
     process.exit();
@@ -57,10 +57,10 @@ const accessTokenFile = resolve(__dirname, "secrets.txt");
         break;
       }
     }
-    getProjectName();
+    getProjectName(token);
   };
 
-  async function createRepository(name) {
+  async function createRepository({name, token}) {
     console.log("  Creating repository...\n");
 
     const res = await fetch("https://api.github.com/user/repos", {
@@ -123,6 +123,6 @@ const accessTokenFile = resolve(__dirname, "secrets.txt");
     process.exit();
   }
 
-  if (token) return getProjectName();
+  if (token) return getProjectName(token);
   await getAccessToken();
 })();
