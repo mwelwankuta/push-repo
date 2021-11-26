@@ -76,8 +76,7 @@ const accessTokenFile = resolve(__dirname, "secrets.txt");
     if (error) return console.log(`ERROR: ${statusText}`);
 
     const data = await res.json();
-    const originUrl = `${data.url}.git`;
-
+    const originUrl = `https://github.com/${data.owner.login}/${data.name}.git`;
     const cwd = process.cwd();
 
     exec("git init", { cwd });
