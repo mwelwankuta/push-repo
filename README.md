@@ -4,7 +4,7 @@
 
 install package globally
 
-```
+```sh
 # install using npm
 npm install -g start-repo
 

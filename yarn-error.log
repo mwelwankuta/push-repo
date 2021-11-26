@@ -39,7 +39,7 @@ npm manifest:
     },
     "repository": {
       "type": "git",
-      "url": "git+https://github.com/mwelwankuta/init-repo.git"
+      "url": "git+https://github.com/mwelwankuta/start-repo.git"
     },
     "keywords": [
       "commandline-tool",
@@ -57,7 +57,7 @@ npm manifest:
       "open": "^8.4.0"
     },
     "bugs": {
-      "url": "https://github.com/mwelwankuta/init-repo/issues"
+      "url": "https://github.com/mwelwankuta/start-repo/issues"
     },
     "publishConfig": {
       "access": "public",
@@ -65,7 +65,7 @@ npm manifest:
         "main"
       ]
     },
-    "homepage": "https://github.com/mwelwankuta/init-repo#readme"
+    "homepage": "https://github.com/mwelwankuta/start-repo#readme"
   }
 
 yarn manifest: 
