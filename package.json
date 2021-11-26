@@ -13,10 +13,11 @@
     "url": "git+https://github.com/mwelwankuta/init-repo.git"
   },
   "keywords": [
-    "commandline-tool",
     "git",
     "init",
+    "initialize",
     "repository",
+    "repo",
     "project",
     "create"
   ],

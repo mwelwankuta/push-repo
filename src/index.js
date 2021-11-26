@@ -9,22 +9,37 @@ import fetch from "node-fetch";
 import inquirer from "inquirer";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const accessTokenFilePath = resolve(__dirname, "secrets.txt");
+const accessTokenFile = resolve(__dirname, "secrets.txt");
 
 (async () => {
-  // get github access token from secrets
-  const file = readFileSync(accessTokenFilePath, {
+  const file = readFileSync(accessTokenFile, {
     encoding: "utf8",
     flag: "r",
   });
 
   const token = file.split("=")[1];
 
-  // fetch user access token
-  async function getAccessToken() {
-    console.log("Paste your access token to log in ");
+  const getProjectName = async () => {
+    const { name } = await inquirer.prompt([
+      {
+        type: "input",
+        name: "name",
+        message: "Enter the name of your project:",
+      },
+    ]);
+
+    if (name) return await createRepository(name);
+
+    console.log("You did not enter a project name");
+    process.exit();
+  };
+
+  const getAccessToken = async () => {
+    console.log("  Opening browser...");
+    console.log("  Paste your access token to log in ");
+
     await open("https://github.com/settings/tokens/new?scopes=repo", {
-      wait: true,
+      wait: false,
     });
 
     while (true) {
@@ -37,18 +52,18 @@ const accessTokenFilePath = resolve(__dirname, "secrets.txt");
       ]);
 
       if (token) {
-        // write access token to secrets
-        writeFileSync(accessTokenFilePath, `ACCESS_TOKEN=${token}`);
+        // write access token to secrets file
+        writeFileSync(accessTokenFile, `ACCESS_TOKEN=${token}`);
         break;
       }
     }
     getProjectName();
-  }
+  };
 
-  async function createRepository({ token, name = "test-repo" }) {
-    console.log("Creating repository...\n");
+  async function createRepository(name) {
+    console.log("  Creating repository...\n");
 
-    const response = await fetch("https://api.github.com/user/repos", {
+    const res = await fetch("https://api.github.com/user/repos", {
       method: "POST",
       body: JSON.stringify({ name }),
       headers: {
@@ -56,29 +71,23 @@ const accessTokenFilePath = resolve(__dirname, "secrets.txt");
       },
     });
 
-    const statusText = response.statusText;
-
-    const error = response.status >= 400;
+    const statusText = res.statusText;
+    const error = res.status >= 400;
     if (error) return console.log(`ERROR: ${statusText}`);
 
-    const data = await response.json();
+    const data = await res.json();
     const originUrl = `${data.url}.git`;
 
-    const run = `git init,git remote add origin ${originUrl},git branch -M main`;
+    const cwd = process.cwd();
 
-    const init = run.split(",")[0];
-    const remote = run.split(",")[1];
-    const branch = run.split(",")[2];
+    exec("git init", { cwd });
+    exec(`git remote add origin ${originUrl}`, { cwd });
+    exec("git branch -M main", { cwd });
 
-    exec(init, { cwd: process.cwd() });
-    exec(remote, { cwd: process.cwd() });
-    exec(branch, { cwd: process.cwd() });
-
-    console.log(`Successfully created repository ${data.name}`);
+    console.log(`Successfully created repository '${data.name}'`);
   }
 
   if (!token) {
-    // inquirer to get yes or no from user
     const { shouldCreateAccessToken } = await inquirer.prompt([
       {
         type: "list",
@@ -88,32 +97,12 @@ const accessTokenFilePath = resolve(__dirname, "secrets.txt");
       },
     ]);
 
-    if (shouldCreateAccessToken === "Yes") await getAccessToken();
-    else process.exit();
-  }
+    if (shouldCreateAccessToken === "Yes") return await getAccessToken();
 
-  try {
-    if (token) {
-      getProjectName();
-    }
-  } catch (error) {
-    await getAccessToken();
-  }
-
-  async function getProjectName() {
-    // get project name
-    const { name } = await inquirer.prompt([
-      {
-        type: "input",
-        name: "name",
-        message: "Enter the name of your project:",
-      },
-    ]);
-
-    if (name) return await createRepository({ token, name });
-
-    // stop process
-    console.log("You did not enter a project name");
+    console.log("  exiting...");
     process.exit();
   }
+
+  if (token) return getProjectName();
+  await getAccessToken();
 })();
