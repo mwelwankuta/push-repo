@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, readdir, writeFileSync, opendir, readdirSync } from "fs";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 import { exec } from "child_process";
@@ -79,11 +79,32 @@ const accessTokenFile = resolve(__dirname, "secrets.txt");
     const originUrl = `https://github.com/${data.owner.login}/${data.name}.git`;
     const cwd = process.cwd();
 
-    exec("git init", { cwd });
-    exec(`git remote add origin ${originUrl}`, { cwd });
-    exec("git branch -M main", { cwd });
+    const files = readdirSync(cwd).length > 0;
 
-    console.log(`Successfully created repository '${data.name}'`);
+    if (files) {
+      /*  push an existing repository */
+      exec("git init", { cwd });
+      exec("git add .", { cwd });
+      exec('git commit -m "first commit', { cwd });
+      exec(`git remote add origin ${originUrl}`, { cwd });
+      exec("git branch -M main", { cwd });
+      exec("git push -u origin main", { cwd });
+
+      console.log("  Pushing files...");
+    } else {
+      /* create a new repository */
+      exec("git init", { cwd });
+
+      writeFileSync(resolve(cwd, "README.md"), `# ${data.name}`);
+
+      exec("git add README.md", { cwd });
+      exec('git commit -m "first commit"', { cwd });
+      exec("git branch -M main", { cwd });
+      exec(`git remote add origin ${originUrl}`, { cwd });
+      exec("git push -u origin main", { cwd });
+    }
+
+    console.log(`  Successfully created repository '${data.name}'`);
   }
 
   if (!token) {
