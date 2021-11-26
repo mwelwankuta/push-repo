@@ -1,17 +1,28 @@
 # create repo
 
+Quickly connect your project to a new git repository within seconds. The first time your run `start-repo` you'll have to follow the steps to connect your github account.
+
 ## Installation
 
-install package globally
+Then run the following command to install using npm
 
 ```sh
-# install using npm
 npm install -g start-repo
+```
+## or
 
-# install using yarn
+```sh
 yarn global add start-repo
 ```
 
-## Usage
+to install using yarn
 
-run `start-repo` to initialize a new project
+## Usage
+While in a directory run 
+```sh
+start-repo 
+```
+to initialize a new project
+
+## Licence
+This project is under the [MIT Licence](https://raw.githubusercontent.com/mwelwankuta/start-repo/master/LICENSE)
