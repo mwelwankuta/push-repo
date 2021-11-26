@@ -69,7 +69,6 @@ const accessTokenFile = join(__dirname, "secrets.txt");
     });
   
     const token = file.split("=")[1];
-    console.log(token, 'tokenni')
 
     const res = await fetch("https://api.github.com/user/repos", {
       method: "POST",
@@ -85,7 +84,6 @@ const accessTokenFile = join(__dirname, "secrets.txt");
     if (error) return console.log(`ERROR: ${statusText}`);
 
     const data = await res.json();
-    console.log(data)
     const originUrl = `https://github.com/${data.owner.login}/${data.name}.git`;
     const cwd = process.cwd();
 
