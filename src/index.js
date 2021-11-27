@@ -60,14 +60,17 @@ async function open(url) {
         writeFileSync(accessTokenFile, `ACCESS_TOKEN=${token}`);
         break;
       } else {
-        getAccessToken(false); // should open browser
+        console.log(chalk.yellow("  you did not enter a token, exiting...\n"));
+        process.exit(1);
       }
     }
-    console.log("  you've been logged in, run `start-repo` to get started.");
+    console.log(
+      chalk.green("  you've been logged in, run `start-repo` to get started.")
+    );
   };
 
   async function createRepository(name) {
-    console.log("  Creating repository...\n");
+    console.log("\n  Creating repository...\n");
 
     const file = readFileSync(accessTokenFile, {
       encoding: "utf8",
@@ -78,7 +81,7 @@ async function open(url) {
 
     if (!token) {
       console.log(chalk.yellow("you are not authenticated. exiting..."));
-      process.exit();
+      process.exit(1);
     }
 
     const res = await fetch("https://api.github.com/user/repos", {
@@ -95,38 +98,56 @@ async function open(url) {
     if (error) return console.log(chalk.red(`${statusText}`));
 
     const data = await res.json();
-    const originUrl = `https://github.com/${data.owner.login}/${data.name}.git`;
+    const repoUrl = `https://github.com/${data.owner.login}/${data.name}`;
+    const originUrl = `${repoUrl}.git`;
     const cwd = process.cwd();
     const execOptions = { cwd, stdio: "pipe" };
 
     const files = readdirSync(cwd).length > 0;
 
+    // add origin, rename branch and push code
     const gitCommands = (execOptions) => {
+      try {
+        // try to commit files
+        execSync(`git commit -m "first commit"`, execOptions);
+      } catch (error) {
+        execSync(`git commit -m "initial commit"`, execOptions);
+      }
+
       execSync("git branch -M main", execOptions);
-      execSync(`git remote add origin ${originUrl}`, execOptions);
+
+      try {
+        execSync(`git remote add origin ${originUrl}`, execOptions);
+      } catch (error) {
+        // replace previous remote
+        console.log("  removing previous origin\n");
+        execSync("git remote remote origin ", execOptions);
+        console.log("  adding new origin\n");
+        execSync(`git remote add origin ${originUrl}`, execOptions);
+      }
+
       console.log("  Pushing files...\n");
       execSync("git push -u origin main", execOptions);
       console.log(
-        chalk.green(`  Successfully created repository '${data.name}'`)
+        chalk.green(
+          `  Successfully created repository '${data.name}'. ${repoUrl}`
+        )
       );
     };
 
-    if (files) {
-      // push an existing repository
-      console.log("  Initializing repository...\n");
-      execSync("git init", execOptions);
-      execSync("git add .", execOptions);
-      execSync(`git commit -m "first commit"`, execOptions);
-      return gitCommands(execOptions); // add origin, rename branch and push code
-    }
-
-    // create a new repository
-    writeFileSync(resolve(cwd, "README.md"), `# ${data.name}`);
     console.log("  Initializing repository...\n");
     execSync("git init", execOptions);
+
+    if (files) {
+      // existing files
+      execSync("git add .", execOptions);
+      return gitCommands(execOptions);
+    }
+
+    // blank directory
+    writeFileSync(resolve(cwd, "README.md"), `# ${data.name}`);
     execSync("git add README.md", execOptions);
-    execSync(`git commit -m "first commit"`, execOptions);
-    gitCommands(execOptions); // add origin, rename branch and push code
+    gitCommands(execOptions);
   }
 
   const file = readFileSync(accessTokenFile, {
@@ -151,7 +172,7 @@ async function open(url) {
       if (shouldCreateAccessToken === "Yes") return await getAccessToken();
 
       console.log("  exiting...");
-      process.exit();
+      process.exit(1);
     } else if (token) return await getProjectName();
   } catch (error) {
     console.log(" ", chalk.red(error.message));
