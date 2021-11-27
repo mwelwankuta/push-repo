@@ -27,12 +27,13 @@ const accessTokenFile = join(__dirname, "secrets.txt");
     process.exit();
   };
 
-  const getAccessToken = async () => {
+  const getAccessToken = async (shouldOpenBrowser = true) => {
     console.log("  Opening browser...");
 
-    await open("https://github.com/settings/tokens/new?scopes=repo", {
-      wait: true,
-    });
+    if (shouldOpenBrowser)
+      await open("https://github.com/settings/tokens/new?scopes=repo", {
+        wait: true,
+      });
 
     while (true) {
       const { token } = await inquirer.prompt([
@@ -43,13 +44,15 @@ const accessTokenFile = join(__dirname, "secrets.txt");
         },
       ]);
 
-      if (token) {
+      if (token.trim().length > 0) {
         // write access token to secrets file
         writeFileSync(accessTokenFile, `ACCESS_TOKEN=${token}`);
         break;
+      } else {
+        getAccessToken(false); // should open browser
       }
     }
-    await getProjectName();
+    console.log('logged in, run `start-repo` to get started.')
   };
 
   async function createRepository(name) {
@@ -88,7 +91,6 @@ const accessTokenFile = join(__dirname, "secrets.txt");
     const files = readdirSync(cwd).length > 0;
 
     const gitCommands = (execOptions) => {
-      console.log(originUrl);
       execSync("git branch -M main", execOptions);
       execSync("git remote remove origin", execOptions);
       execSync(`git remote add origin ${originUrl}`, execOptions);
@@ -102,7 +104,7 @@ const accessTokenFile = join(__dirname, "secrets.txt");
       console.log("  Initializing repository...\n");
       execSync("git init", execOptions);
       execSync("git add .", execOptions);
-      execSync('git commit -m "first commit', execOptions);
+      execSync('git commit -m "first commit"', execOptions);
       return gitCommands(execOptions); // add origin, rename branch and push code
     }
 
@@ -140,6 +142,7 @@ const accessTokenFile = join(__dirname, "secrets.txt");
       process.exit();
     } else if (token) return await getProjectName();
   } catch (error) {
+    console.log("error", error.message);
     await getAccessToken();
   }
 })();
