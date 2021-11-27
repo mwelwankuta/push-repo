@@ -25,7 +25,12 @@ async function open(url) {
 }
 
 (async () => {
-  const getProjectName = async () => {
+  const getProjectName = async (projectName) => {
+    // name from run arguments
+    if (projectName) {
+      return await createRepository(projectName);
+    }
+
     const { name } = await inquirer.prompt([
       {
         type: "input",
@@ -61,7 +66,7 @@ async function open(url) {
         break;
       } else {
         console.log(chalk.yellow("  you did not enter a token, exiting...\n"));
-        process.exit(1);
+        process.exit(0);
       }
     }
     console.log(
@@ -81,7 +86,7 @@ async function open(url) {
 
     if (!token) {
       console.log(chalk.yellow("you are not authenticated. exiting..."));
-      process.exit(1);
+      process.exit(0);
     }
 
     const res = await fetch("https://api.github.com/user/repos", {
@@ -95,20 +100,26 @@ async function open(url) {
 
     const statusText = res.statusText;
     const error = res.status >= 400;
+
     if (error) return console.log(chalk.red(`${statusText}`));
 
     const data = await res.json();
-    const repoUrl = `https://github.com/${data.owner.login}/${data.name}`;
-    const originUrl = `${repoUrl}.git`;
-    const cwd = process.cwd();
-    const execOptions = { cwd, stdio: "pipe" };
 
+    const user = data.owner.login;
+    const repository = data.name;
+
+    const repoUrl = `https://github.com/${user}/${repository}`;
+    const originUrl = `${repoUrl}.git`;
+
+    const cwd = process.cwd();
+
+    const execOptions = { cwd, stdio: "pipe" };
     const files = readdirSync(cwd).length > 0;
 
     // add origin, rename branch and push code
     const gitCommands = (execOptions) => {
+      // try to commit files
       try {
-        // try to commit files
         execSync(`git commit -m "first commit"`, execOptions);
       } catch (error) {
         execSync(`git commit -m "initial commit"`, execOptions);
@@ -158,22 +169,33 @@ async function open(url) {
   const token = file.split("=")[1];
 
   try {
-    if (!token) {
-      const { shouldCreateAccessToken } = await inquirer.prompt([
-        {
-          type: "list",
-          name: "shouldCreateAccessToken",
-          message:
-            "You need an access token to create a repository. Create one?",
-          choices: ["Yes", "No"],
-        },
-      ]);
+    if (token) {
+      const reserved = ["--h", "-h", "--help", "-help"];
+      const arg = process.argv[2];
 
-      if (shouldCreateAccessToken === "Yes") return await getAccessToken();
+      if (reserved.includes(arg)) {
+        return console.log(
+          "\n  for help visit:",
+          chalk.underline("https://github.com/mwelwankuta/start-repo#readme")
+        );
+      }
 
-      console.log("  exiting...");
-      process.exit(1);
-    } else if (token) return await getProjectName();
+      return await getProjectName(arg);
+    }
+
+    const { shouldCreateAccessToken } = await inquirer.prompt([
+      {
+        type: "list",
+        name: "shouldCreateAccessToken",
+        message: "You need an access token to create a repository. Create one?",
+        choices: ["Yes", "No"],
+      },
+    ]);
+
+    if (shouldCreateAccessToken === "Yes") return await getAccessToken();
+
+    console.log("  exiting...");
+    process.exit(0);
   } catch (error) {
     console.log(" ", chalk.red(error.message));
   }

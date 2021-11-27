@@ -6,29 +6,35 @@ Quickly connect your project to a new git repository within seconds. The first t
 
 # Installation
 
-Then run the following command to install using npm
+using npm
 
 ```sh
 npm install -g start-repo
 ```
 
-## or
+using yarn
 
 ```sh
 yarn global add start-repo
 ```
 
-to install using yarn
-
 # Usage
 
-While in a directory run
+run the following commands while in a project directory
+
+- passing an argument (recommended)
+
+```sh
+start-repo my-project
+```
+
+- without argument
 
 ```sh
 start-repo
 ```
 
-to initialize a new project
+then follow the steps that follow to initialize a new project
 
 # Contributing
 
@@ -43,3 +49,10 @@ to initialize a new project
 # Licence
 
 This project is under the [MIT Licence](https://raw.githubusercontent.com/mwelwankuta/start-repo/master/LICENSE)
+
+# Author
+
+
+<br/>
+
+[![](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/Merlee4t)
