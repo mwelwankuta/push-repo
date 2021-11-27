@@ -6,11 +6,12 @@ import { execSync } from "child_process";
 
 import fetch from "node-fetch";
 import inquirer from "inquirer";
+import chalk from "chalk";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const accessTokenFile = join(__dirname, "secrets.txt");
 
-function open(url) {
+async function open(url) {
   switch (process.platform) {
     case "darwin":
       execSync(`open ${url}`);
@@ -35,15 +36,15 @@ function open(url) {
 
     if (name) return await createRepository(name);
 
-    console.log("You did not enter a project name");
-    process.exit();
+    console.log(chalk.yellow("  You did not enter a project name. try again"));
+    getProjectName();
   };
 
   const getAccessToken = async (shouldOpenBrowser = true) => {
     console.log("  Opening browser...");
 
     if (shouldOpenBrowser)
-      open("https://github.com/settings/tokens/new?scopes=repo");
+      await open("https://github.com/settings/tokens/new?scopes=repo");
 
     while (true) {
       const { token } = await inquirer.prompt([
@@ -76,7 +77,7 @@ function open(url) {
     const token = file.split("=")[1];
 
     if (!token) {
-      console.log("you are not authenticated. exiting...");
+      console.log(chalk.yellow("you are not authenticated. exiting..."));
       process.exit();
     }
 
@@ -91,7 +92,7 @@ function open(url) {
 
     const statusText = res.statusText;
     const error = res.status >= 400;
-    if (error) return console.log(`  ERROR: ${statusText}`);
+    if (error) return console.log(chalk.red(`${statusText}`));
 
     const data = await res.json();
     const originUrl = `https://github.com/${data.owner.login}/${data.name}.git`;
@@ -105,7 +106,9 @@ function open(url) {
       execSync(`git remote add origin ${originUrl}`, execOptions);
       console.log("  Pushing files...\n");
       execSync("git push -u origin main", execOptions);
-      console.log(`  Successfully created repository '${data.name}'`);
+      console.log(
+        chalk.green(`  Successfully created repository '${data.name}'`)
+      );
     };
 
     if (files) {
@@ -151,6 +154,6 @@ function open(url) {
       process.exit();
     } else if (token) return await getProjectName();
   } catch (error) {
-    console.log(" ", error.message);
+    console.log(" ", chalk.red(error.message));
   }
 })();
