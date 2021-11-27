@@ -2,7 +2,7 @@
 import { readFileSync, writeFileSync, readdirSync } from "fs";
 import { dirname, join, resolve } from "path";
 import { fileURLToPath } from "url";
-import { execSync, spawnSync } from "child_process";
+import { execSync } from "child_process";
 
 import open from "open";
 import fetch from "node-fetch";
@@ -62,6 +62,11 @@ const accessTokenFile = join(__dirname, "secrets.txt");
 
     const token = file.split("=")[1];
 
+    if (!token) {
+      console.log("you are not authenticated. exiting...");
+      process.exit();
+    }
+
     const res = await fetch("https://api.github.com/user/repos", {
       method: "POST",
       body: JSON.stringify({ name }),
@@ -78,36 +83,36 @@ const accessTokenFile = join(__dirname, "secrets.txt");
     const data = await res.json();
     const originUrl = `https://github.com/${data.owner.login}/${data.name}.git`;
     const cwd = process.cwd();
+    const execOptions = { cwd, stdio: "pipe" };
 
-    console.log(originUrl);
     const files = readdirSync(cwd).length > 0;
 
-    const gitCommands = (cwd) => {
+    const gitCommands = (execOptions) => {
       console.log(originUrl);
-      execSync("git branch -M main", { cwd });
-      execSync("git remote remove origin", { cwd });
-      execSync(`git remote add origin ${originUrl}`, { cwd });
+      execSync("git branch -M main", execOptions);
+      execSync("git remote remove origin", execOptions);
+      execSync(`git remote add origin ${originUrl}`, execOptions);
       console.log("  Pushing files...\n");
-      execSync("git push -u origin main", { cwd });
+      execSync("git push -u origin main", execOptions);
       console.log(`  Successfully created repository '${data.name}'`);
     };
 
     if (files) {
       // push an existing repository
       console.log("  Initializing repository...\n");
-      execSync("git init", { cwd });
-      execSync("git add .", { cwd });
-      execSync('git commit -m "first commit', { cwd });
-      return await gitCommands(cwd); // add origin, rename branch and push code
+      execSync("git init", execOptions);
+      execSync("git add .", execOptions);
+      execSync('git commit -m "first commit', execOptions);
+      return gitCommands(execOptions); // add origin, rename branch and push code
     }
 
     // create a new repository
     writeFileSync(resolve(cwd, "README.md"), `# ${data.name}`);
     console.log("  Initializing repository...\n");
-    execSync("git init", { cwd });
-    execSync("git add README.md", { cwd });
-    execSync('git commit -m "first commit"', { cwd });
-    gitCommands(cwd); // add origin, rename branch and push code
+    execSync("git init", execOptions);
+    execSync("git add README.md", execOptions);
+    execSync('git commit -m "first commit"', execOptions);
+    gitCommands(execOptions); // add origin, rename branch and push code
   }
 
   const file = readFileSync(accessTokenFile, {
