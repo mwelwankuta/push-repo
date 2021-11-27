@@ -1,6 +1,6 @@
 {
   "name": "start-repo",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Quickly initialize a project directory connected to a GitHub repository.",
   "type": "module",
   "main": "src/index.js",
@@ -25,8 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "inquirer": "^8.2.0",
-    "node-fetch": "^3.1.0",
-    "open": "^8.4.0"
+    "node-fetch": "^3.1.0"
   },
   "bugs": {
     "url": "https://github.com/mwelwankuta/start-repo/issues"

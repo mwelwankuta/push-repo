@@ -4,12 +4,24 @@ import { dirname, join, resolve } from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
 
-import open from "open";
 import fetch from "node-fetch";
 import inquirer from "inquirer";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const accessTokenFile = join(__dirname, "secrets.txt");
+
+function open(url) {
+  switch (process.platform) {
+    case "darwin":
+      execSync(`open ${url}`);
+      break;
+    case "win32":
+      execSync(`start ${url}`);
+      break;
+    default:
+      execSync(`xdg-open ${url}`);
+  }
+}
 
 (async () => {
   const getProjectName = async () => {
@@ -31,9 +43,7 @@ const accessTokenFile = join(__dirname, "secrets.txt");
     console.log("  Opening browser...");
 
     if (shouldOpenBrowser)
-      await open("https://github.com/settings/tokens/new?scopes=repo", {
-        wait: true,
-      });
+      open("https://github.com/settings/tokens/new?scopes=repo");
 
     while (true) {
       const { token } = await inquirer.prompt([
