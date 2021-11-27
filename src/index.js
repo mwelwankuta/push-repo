@@ -52,7 +52,7 @@ const accessTokenFile = join(__dirname, "secrets.txt");
         getAccessToken(false); // should open browser
       }
     }
-    console.log('logged in, run `start-repo` to get started.')
+    console.log("  you've been logged in, run `start-repo` to get started.");
   };
 
   async function createRepository(name) {
@@ -81,7 +81,7 @@ const accessTokenFile = join(__dirname, "secrets.txt");
 
     const statusText = res.statusText;
     const error = res.status >= 400;
-    if (error) return console.log(`ERROR: ${statusText}`);
+    if (error) return console.log(`  ERROR: ${statusText}`);
 
     const data = await res.json();
     const originUrl = `https://github.com/${data.owner.login}/${data.name}.git`;
@@ -92,7 +92,6 @@ const accessTokenFile = join(__dirname, "secrets.txt");
 
     const gitCommands = (execOptions) => {
       execSync("git branch -M main", execOptions);
-      execSync("git remote remove origin", execOptions);
       execSync(`git remote add origin ${originUrl}`, execOptions);
       console.log("  Pushing files...\n");
       execSync("git push -u origin main", execOptions);
@@ -104,7 +103,7 @@ const accessTokenFile = join(__dirname, "secrets.txt");
       console.log("  Initializing repository...\n");
       execSync("git init", execOptions);
       execSync("git add .", execOptions);
-      execSync('git commit -m "first commit"', execOptions);
+      execSync(`git commit -m "first commit"`, execOptions);
       return gitCommands(execOptions); // add origin, rename branch and push code
     }
 
@@ -113,7 +112,7 @@ const accessTokenFile = join(__dirname, "secrets.txt");
     console.log("  Initializing repository...\n");
     execSync("git init", execOptions);
     execSync("git add README.md", execOptions);
-    execSync('git commit -m "first commit"', execOptions);
+    execSync(`git commit -m "first commit"`, execOptions);
     gitCommands(execOptions); // add origin, rename branch and push code
   }
 
@@ -142,7 +141,6 @@ const accessTokenFile = join(__dirname, "secrets.txt");
       process.exit();
     } else if (token) return await getProjectName();
   } catch (error) {
-    console.log("error", error.message);
-    await getAccessToken();
+    console.log(" ", error.message);
   }
 })();
