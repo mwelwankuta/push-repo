@@ -2,7 +2,7 @@
 import { readFileSync, writeFileSync, readdirSync } from "fs";
 import { dirname, join, resolve } from "path";
 import { fileURLToPath } from "url";
-import { exec } from "child_process";
+import { execSync, spawnSync } from "child_process";
 
 import open from "open";
 import fetch from "node-fetch";
@@ -12,13 +12,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const accessTokenFile = join(__dirname, "secrets.txt");
 
 (async () => {
-  const file = readFileSync(accessTokenFile, {
-    encoding: "utf8",
-    flag: "r",
-  });
-
-  const token = file.split("=")[1];
-
   const getProjectName = async () => {
     const { name } = await inquirer.prompt([
       {
@@ -28,7 +21,7 @@ const accessTokenFile = join(__dirname, "secrets.txt");
       },
     ]);
 
-    if (name) return await createRepository({ name });
+    if (name) return await createRepository(name);
 
     console.log("You did not enter a project name");
     process.exit();
@@ -36,10 +29,9 @@ const accessTokenFile = join(__dirname, "secrets.txt");
 
   const getAccessToken = async () => {
     console.log("  Opening browser...");
-    console.log("  Paste your access token to log in ");
 
     await open("https://github.com/settings/tokens/new?scopes=repo", {
-      wait: false,
+      wait: true,
     });
 
     while (true) {
@@ -47,7 +39,7 @@ const accessTokenFile = join(__dirname, "secrets.txt");
         {
           type: "input",
           name: "token",
-          message: "Enter your access token:",
+          message: "Enter your access token to login:",
         },
       ]);
 
@@ -57,17 +49,17 @@ const accessTokenFile = join(__dirname, "secrets.txt");
         break;
       }
     }
-    getProjectName();
+    await getProjectName();
   };
 
-  async function createRepository({ name }) {
+  async function createRepository(name) {
     console.log("  Creating repository...\n");
 
     const file = readFileSync(accessTokenFile, {
       encoding: "utf8",
       flag: "r",
     });
-  
+
     const token = file.split("=")[1];
 
     const res = await fetch("https://api.github.com/user/repos", {
@@ -75,7 +67,7 @@ const accessTokenFile = join(__dirname, "secrets.txt");
       body: JSON.stringify({ name }),
       headers: {
         Authorization: `token ${token}`,
-        'Content-Type':"application/json"
+        "Content-Type": "application/json",
       },
     });
 
@@ -87,54 +79,62 @@ const accessTokenFile = join(__dirname, "secrets.txt");
     const originUrl = `https://github.com/${data.owner.login}/${data.name}.git`;
     const cwd = process.cwd();
 
+    console.log(originUrl);
     const files = readdirSync(cwd).length > 0;
 
+    const gitCommands = (cwd) => {
+      console.log(originUrl);
+      execSync("git branch -M main", { cwd });
+      execSync("git remote remove origin", { cwd });
+      execSync(`git remote add origin ${originUrl}`, { cwd });
+      console.log("  Pushing files...\n");
+      execSync("git push -u origin main", { cwd });
+      console.log(`  Successfully created repository '${data.name}'`);
+    };
+
     if (files) {
-      /*  push an existing repository */
-      exec("git init", { cwd });
-      exec("git add .", { cwd });
-      exec('git commit -m "first commit', { cwd });
-      exec(`git remote add origin ${originUrl}`, { cwd });
-      exec("git branch -M main", { cwd });
-      exec("git push -u origin main", { cwd });
-
-      console.log("  Pushing files...");
-    } else {
-      /* create a new repository */
-      exec("git init", { cwd });
-
-      writeFileSync(resolve(cwd, "README.md"), `# ${data.name}`);
-
-      exec("git add README.md", { cwd });
-      exec('git commit -m "first commit"', { cwd });
-      exec("git branch -M main", { cwd });
-      exec(`git remote add origin ${originUrl}`, { cwd });
-      exec("git push -u origin main", { cwd });
+      // push an existing repository
+      console.log("  Initializing repository...\n");
+      execSync("git init", { cwd });
+      execSync("git add .", { cwd });
+      execSync('git commit -m "first commit', { cwd });
+      return await gitCommands(cwd); // add origin, rename branch and push code
     }
 
-    console.log(`  Successfully created repository '${data.name}'`);
+    // create a new repository
+    writeFileSync(resolve(cwd, "README.md"), `# ${data.name}`);
+    console.log("  Initializing repository...\n");
+    execSync("git init", { cwd });
+    execSync("git add README.md", { cwd });
+    execSync('git commit -m "first commit"', { cwd });
+    gitCommands(cwd); // add origin, rename branch and push code
   }
 
-  if (!token) {
-    const { shouldCreateAccessToken } = await inquirer.prompt([
-      {
-        type: "list",
-        name: "shouldCreateAccessToken",
-        message: "You need an access token to create repositories. Create one?",
-        choices: ["Yes", "No"],
-      },
-    ]);
+  const file = readFileSync(accessTokenFile, {
+    encoding: "utf8",
+    flag: "r",
+  });
 
-    if (shouldCreateAccessToken === "Yes") return await getAccessToken();
+  const token = file.split("=")[1];
 
-    console.log("  exiting...");
-    process.exit();
-  }
-  
   try {
-    if (token) return getProjectName();
+    if (!token) {
+      const { shouldCreateAccessToken } = await inquirer.prompt([
+        {
+          type: "list",
+          name: "shouldCreateAccessToken",
+          message:
+            "You need an access token to create a repository. Create one?",
+          choices: ["Yes", "No"],
+        },
+      ]);
+
+      if (shouldCreateAccessToken === "Yes") return await getAccessToken();
+
+      console.log("  exiting...");
+      process.exit();
+    } else if (token) return await getProjectName();
   } catch (error) {
     await getAccessToken();
   }
-
 })();
