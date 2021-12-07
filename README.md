@@ -2,7 +2,7 @@
 
 ![npm](https://img.shields.io/npm/dw/start-repo?color=red&label=downloads&logo=npm&style=for-the-badge)
 
-Quickly connect your project to a new git repository within seconds. The first time your run `start-repo` you'll have to follow the steps to connect your github account.
+Quickly create a local git project connected to github. The first time your run `start-repo` you'll have to follow the steps to connect your github account.
 
 # Installation
 
@@ -33,6 +33,10 @@ start-repo my-project
 ```sh
 start-repo
 ```
+| Argument | What it does |
+|----------|--------------|
+| -logout  | clears local access token |
+| -c       | creates a folder |
 
 then follow the steps that follow to initialize a new project
 
