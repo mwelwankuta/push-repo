@@ -1,6 +1,6 @@
 # start-repo
 
-![npm](https://img.shields.io/npm/dw/start-repo?color=red&label=downloads&logo=npm&style=for-the-badge)
+![npm](https://img.shields.io/npm/dt/start-repo?color=red&style=flat-square)
 
 Quickly create a local git project connected to github. The first time your run `start-repo` you'll have to follow the steps to connect your github account.
 
