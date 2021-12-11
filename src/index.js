@@ -110,9 +110,8 @@ async function open(url) {
           choices: ['Yes', 'No'],
         },
       ]);
-      if (renew === 'Yes') {
-        return getAccessToken();
-      } else {
+      if (renew === 'Yes') return getAccessToken();
+      else {
         console.log('  try to increase the access token expiry duration.');
         process.exit();
       }
@@ -121,10 +120,10 @@ async function open(url) {
     if (error && res.status !== 401)
       return console.log(chalk.red(`${statusText}`));
 
-    const data = await res.json();
+    const { name: repoName, owner } = await res.json();
 
-    const user = data.owner.login;
-    const repository = data.name;
+    const user = owner.login;
+    const repository = repoName;
 
     const repoUrl = `https://github.com/${user}/${repository}`;
     const originUrl = `${repoUrl}.git`;
@@ -140,6 +139,7 @@ async function open(url) {
       try {
         execSync(`git commit -m "first commit"`, execOptions);
       } catch (error) {
+        // retry commit
         try {
           execSync(`git commit -m "initial commit"`, execOptions);
         } catch (error) {
@@ -176,8 +176,8 @@ async function open(url) {
     if (readdirSync(cwd).filter(file => file === '.git').length === 0)
       execSync('git init', execOptions);
 
+    // existing files
     if (files) {
-      // existing files
       execSync('git add .', execOptions);
       return gitCommands(execOptions);
     }
@@ -188,12 +188,12 @@ async function open(url) {
     gitCommands(execOptions);
   }
 
-  const file = readFileSync(accessTokenFile, {
+  const fileContent = readFileSync(accessTokenFile, {
     encoding: 'utf8',
     flag: 'r',
   });
 
-  const token = file.split('=')[1];
+  const token = fileContent.split('=')[1];
 
   try {
     if (token) {
@@ -209,6 +209,7 @@ async function open(url) {
         choices: ['Yes', 'No'],
       },
     ]);
+    ``;
     console.log('past');
 
     if (shouldCreateAccessToken === 'Yes') return await getAccessToken();
