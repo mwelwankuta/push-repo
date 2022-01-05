@@ -22,33 +22,16 @@ yarn global add start-repo
 
 run the following commands while in a project directory
 
-- passing an argument (recommended)
-
+- passing a name argument
 ```sh
 start-repo my-project
 ```
 
-- without argument
+- without second argument
 
 ```sh
 start-repo
 ```
-| Argument | What it does |
-|----------|--------------|
-| -logout  | clears local access token |
-| -c       | creates a folder |
-
-then follow the steps that follow to initialize a new project
-
-# Contributing
-
-- Fork it
-- Create your feature branch `git checkout -b my-feature-name`
-- Test your code with `npm link` and then `npm link start-repo` in the directory you would like to test the code
-- Run the test code. to run the test simply enter `start-repo` while in your testing project directory
-- Commit your changes `git commit -am 'added a feature'`
-- Push the branch `git push origin my-feature-branch`
-- Submit a pull request
 
 # Licence
 
