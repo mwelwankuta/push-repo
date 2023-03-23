@@ -1,41 +1,8 @@
 {
-  "name": "start-repo",
-  "version": "1.0.13",
+  "name": "@push-repo",
   "description": "Quickly create a local git project connected to github",
-  "type": "module",
-  "main": "src/index.js",
-  "bin": "src/index.js",
-  "scripts": {
-    "start": "node src/index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mwelwankuta/start-repo.git"
-  },
-  "keywords": [
-    "git",
-    "init",
-    "initialize",
-    "repository",
-    "repo",
-    "project",
-    "create"
+  "workspaces": [
+    "packages/*"
   ],
-  "author": "Mwelwa Nkuta",
-  "license": "MIT",
-  "dependencies": {
-    "chalk": "^5.0.0",
-    "inquirer": "^8.2.0",
-    "node-fetch": "^3.1.0"
-  },
-  "bugs": {
-    "url": "https://github.com/mwelwankuta/start-repo/issues"
-  },
-  "publishConfig": {
-    "access": "public",
-    "branches": [
-      "main"
-    ]
-  },
-  "homepage": "https://github.com/mwelwankuta/start-repo#readme"
+  "author": "Mwelwa Nkuta"
 }
