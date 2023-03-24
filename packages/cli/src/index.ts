@@ -1,8 +1,7 @@
 #!/usr/bin/env node
-import chalk from "chalk";
 import { authenticateUser } from "./auth/login.js";
 import { pushRepository } from "./repository/createRepository.js";
-import { getProjectName } from "./utils/getProjectName.js";
+import { getProjectName } from "./utils/processArguments.js";
 import { getTokenFromConf } from "./utils/getToken.js";
 
 const token = getTokenFromConf();

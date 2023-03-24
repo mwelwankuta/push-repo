@@ -25,18 +25,10 @@ app.get("/github/callback", async (req, res) => {
 
   const url = `https://github.com/login/oauth/access_token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&code=${requestToken}`;
   const response = await axios.get(url);
-  const data = await response.data;
-  const access_token = parseTokenData(data);
 
-  await axios.get(
-    `http://localhost:1230?access_token=${access_token}`
-  );
+  await axios.get(`http://localhost:1230?${response.data}`);
   res.send("<h1>You're authenticated, close your browser</h1>");
 });
-
-function parseTokenData(data: string) {
-  return data.split("=")[1];
-}
 
 const port = process.env.PORT;
 app.listen(port, () => {

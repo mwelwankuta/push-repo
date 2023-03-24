@@ -4,6 +4,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const configFilePath = path.join(__dirname, "../config.conf");
+
 export const getTokenFromConf = () => {
   if (!existsSync(configFilePath)) {
     writeFileSync(configFilePath, "access_token=");
@@ -14,5 +15,8 @@ export const getTokenFromConf = () => {
 };
 
 export const saveTokenToConf = (access_token: string) => {
+  if (!access_token) {
+    return;
+  }
   writeFileSync(configFilePath, `access_token=${access_token}`);
 };

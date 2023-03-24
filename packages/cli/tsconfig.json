@@ -24,7 +24,7 @@
     "resolveJsonModule": true,
     "baseUrl": "."
   },
-  "include": ["./src/**/*"],
+  "include": ["./src/**/*.ts", "./src/config.conf"],
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"

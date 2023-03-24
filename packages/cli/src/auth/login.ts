@@ -16,16 +16,16 @@ export async function authenticateUser(): Promise<null | string> {
         server.close();
         resolve(access_token);
       } else {
-        reject({ messsage: " an error just occured" });
+        reject({ message: " an error just occurred" });
       }
       res.end();
     });
     console.log("  Opening browser...");
 
     server.listen(1230, () => {
-      console.log("server listenining");
+      console.log("server listening");
       openInBrowser(
-        "https://github.com/login/oauth/authorize?client_id=64dfe7b7577ebc559ecd"
+        "https://github.com/login/oauth/authorize?client_id=64dfe7b7577ebc559ecd&scope=repo"
       );
     });
   });

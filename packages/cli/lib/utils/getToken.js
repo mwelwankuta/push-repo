@@ -12,6 +12,9 @@ export const getTokenFromConf = () => {
     return configFile.split("=")[1];
 };
 export const saveTokenToConf = (access_token) => {
+    if (!access_token) {
+        return;
+    }
     writeFileSync(configFilePath, `access_token=${access_token}`);
 };
 //# sourceMappingURL=getToken.js.map
