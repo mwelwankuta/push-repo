@@ -14,12 +14,12 @@ const { CLIENT_ID, CLIENT_SECRET } = process.env as unknown as ProcessEnv;
 
 const app: Application = express();
 app.use(cors());
+app.use(express.json());
 
-/**
- * fetches request and returns json data
- * @param url
- * @returns
- */
+app.get("/", (req, res) => {
+  res.send(`<h1>${req.ip}</h1>`);
+});
+
 app.get("/github/callback", async (req, res) => {
   const requestToken = req.query.code;
 
@@ -30,7 +30,7 @@ app.get("/github/callback", async (req, res) => {
   res.send("<h1>You're authenticated, close your browser</h1>");
 });
 
-const port = process.env.PORT;
+const port = 8080 || process.env.PORT;
 app.listen(port, () => {
   console.log(`[server]: listening on port ${port}`);
 });
