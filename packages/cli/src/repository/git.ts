@@ -1,6 +1,6 @@
 import chalk from "chalk";
-import { execSync } from "child_process";
 import type { ExecSyncOptionsWithStringEncoding } from "child_process";
+import { execSync } from "child_process";
 import { openInBrowser } from "../utils/openBrowser.js";
 
 /**

@@ -1,32 +1,25 @@
-import http from "http";
-import url from "url";
-import { openInBrowser } from "../utils/openBrowser.js";
+import chalk from "chalk";
+import readline from "readline";
 import { saveTokenToConf } from "../utils/getToken.js";
+import { openInBrowser } from "../utils/openBrowser.js";
+
+const readlineInterface = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
 export async function authenticateUser(): Promise<null | string> {
-  return new Promise((resolve, reject) => {
-    const server = http.createServer(async (req, res) => {
-      req.setEncoding("utf8");
-      const { access_token } = url.parse(req.url as string, true).query as {
-        access_token: string;
-      };
+  return new Promise((resolve) => {
+    console.log(chalk.bold.white("[push repo] Opening browser..."));
+    readlineInterface.question("Paste access token", (token: string) => {
+      if (!token) authenticateUser();
 
-      if (access_token) {
-        saveTokenToConf(access_token);
-        server.close();
-        resolve(access_token);
-      } else {
-        reject({ message: " an error just occurred" });
-      }
-      res.end();
+      saveTokenToConf(token);
+      resolve(token);
     });
-    console.log("  Opening browser...");
 
-    server.listen(1230, () => {
-      console.log("server listening");
-      openInBrowser(
-        "https://github.com/login/oauth/authorize?client_id=64dfe7b7577ebc559ecd&scope=repo"
-      );
-    });
+    openInBrowser(
+      "https://github.com/login/oauth/authorize?client_id=64dfe7b7577ebc559ecd&scope=repo"
+    );
   });
 }

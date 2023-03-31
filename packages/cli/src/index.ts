@@ -4,18 +4,11 @@ import { pushRepository } from "./repository/createRepository.js";
 import { getProjectName } from "./utils/processArguments.js";
 import { getTokenFromConf } from "./utils/getToken.js";
 
-const token = getTokenFromConf();
+if (!getTokenFromConf()) {
+  await authenticateUser();
+}
 
-try {
-  if (!token) {
-    await authenticateUser();
-  }
-
-  const projectName = getProjectName()
-
-  if (projectName) {
-    pushRepository(projectName);
-  }
-} catch (error) {
-
+const projectName = getProjectName();
+if (projectName) {
+  pushRepository(projectName);
 }

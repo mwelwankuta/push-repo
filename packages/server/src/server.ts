@@ -1,4 +1,5 @@
 import express, { Application } from "express";
+import url from "url";
 import cors from "cors";
 import dotenv from "dotenv";
 import axios from "axios";
@@ -17,22 +18,28 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send(`<h1>${req.ip}</h1>`);
+  res.setHeader("Content-Type", "text/html");
+  res.send(`<h1>${req.hostname}</h1>`);
 });
 
 app.get("/github/callback", async (req, res) => {
-  const requestToken = req.query.code;
+  const response = await axios.get(
+    `https://github.com/login/oauth/access_token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&code=${req.query.code}`
+  );
 
-  const url = `https://github.com/login/oauth/access_token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&code=${requestToken}`;
-  const response = await axios.get(url);
+  const { access_token = "" } = url.parse(
+    `${req.protocol}://${req.hostname}${response.data}` as string,
+    true
+  ).query as {
+    access_token: string;
+  };
 
-  try {
-    await axios.get(`http://localhost:1230?${response.data}`);
-  } catch (error) {console.log('localhost issue 1230')}
-  res.send("<h1>You're authenticated, close your browser</h1>");
+  res.send(
+    `<h1>You're authenticated, paste this access token into your terminal: <br> ${access_token}</h1>`
+  );
 });
 
-const port = 8080 || process.env.PORT;
-app.listen(port, () => {
-  console.log(`[server]: listening on port ${port}`);
+const PORT = 8080 || process.env.PORT;
+app.listen(PORT, () => {
+  console.log(`[server]: listening on port ${PORT}`);
 });

@@ -1,21 +1,22 @@
-# start-repo
+# push-repo
 
-![npm](https://img.shields.io/npm/dt/start-repo?color=red&style=flat-square)
+![npm](https://img.shields.io/npm/dt/push-repo?color=red&style=flat-square)
 
-Quickly create a local git project connected to github. The first time your run `start-repo` you'll have to follow the steps to connect your github account.
+Quickly create a local git project connected to github. The first time your run `push-repo` you'll have to follow the steps to connect your github account.
 
 # Installation
 
 using npm
 
-```sh
-npm install -g start-repo
+```bash
+npm install -g push-repo
 ```
 
-using yarn
+or
 
-```sh
-yarn global add start-repo
+```bash
+npx push-repo
+
 ```
 
 # Usage
@@ -23,23 +24,16 @@ yarn global add start-repo
 run the following commands while in a project directory
 
 - passing a name argument
-```sh
-start-repo my-project
-```
-
-- without second argument
 
 ```sh
-start-repo
+push-repo --name <my-project>
 ```
 
-# Licence
+# Options
 
-This project is under the [MIT Licence](https://raw.githubusercontent.com/mwelwankuta/start-repo/master/LICENSE)
-
-# Author
-
-
-<br/>
-
-[![](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/Merlee4t)
+| Option   | Function                  |
+| -------- | ------------------------- |
+| `--name` | name of github repository |
+| `-n`     | name of github repository |
+| `--ssh`  | use ssh for github auth   |
+| `--http` | use http for github auth  |

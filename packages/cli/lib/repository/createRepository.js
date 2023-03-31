@@ -42,11 +42,12 @@ export async function pushRepository(name) {
         originUrl = `git@github.com:${owner.login}/${repository}`;
     }
     const git = new Git(repoUrl, originUrl, execOptions);
-    const directoryContainFiles = readdirSync(cwd).length > 0;
-    if (readdirSync(cwd).filter((file) => file === ".git").length === 0) {
+    const directoryIsAGitRepository = readdirSync(cwd).filter((file) => file === ".git").length === 0;
+    if (directoryIsAGitRepository) {
         git.init();
     }
-    if (!directoryContainFiles) {
+    const directoryDoesNotContainFiles = readdirSync(cwd).length == 0;
+    if (directoryDoesNotContainFiles) {
         writeFileSync(resolve(cwd, "README.md"), `# ${name}`);
         git.add().commit().origin().push();
         return;

@@ -1,7 +1,8 @@
+import chalk from "chalk";
 import http from "http";
 import url from "url";
-import { openInBrowser } from "../utils/openBrowser.js";
 import { saveTokenToConf } from "../utils/getToken.js";
+import { openInBrowser } from "../utils/openBrowser.js";
 export async function authenticateUser() {
     return new Promise((resolve, reject) => {
         const server = http.createServer(async (req, res) => {
@@ -17,9 +18,8 @@ export async function authenticateUser() {
             }
             res.end();
         });
-        console.log("  Opening browser...");
+        console.log(chalk.bold.white("[push repo] Opening browser..."));
         server.listen(1230, () => {
-            console.log("server listening");
             openInBrowser("https://github.com/login/oauth/authorize?client_id=64dfe7b7577ebc559ecd&scope=repo");
         });
     });

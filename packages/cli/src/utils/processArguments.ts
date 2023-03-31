@@ -8,8 +8,6 @@ interface ProcessArguments extends minimist.ParsedArgs {
   http?: boolean;
 }
 
-export type Protocol = "http" | "ssh";
-
 const args = minimist(process.argv.slice(2)) as ProcessArguments;
 
 /**
@@ -30,7 +28,11 @@ export const getProjectName = () => {
   return projectName as string;
 };
 
-export const getProtocol = (): Protocol => {
+/**
+ * returns the authentication protocol for github
+ * @returns authentication protocol type
+ */
+export const getProtocol = (): "http" | "ssh" => {
   if (args.http) return "http";
   return "ssh";
 };

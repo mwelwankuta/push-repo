@@ -1,8 +1,8 @@
 {
   "name": "@push-repo",
   "description": "Quickly create a local git project connected to github",
+  "author": "Mwelwa Nkuta",
   "workspaces": [
     "packages/*"
-  ],
-  "author": "Mwelwa Nkuta"
+  ]
 }

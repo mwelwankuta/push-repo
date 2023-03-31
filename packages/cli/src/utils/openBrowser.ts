@@ -1,5 +1,9 @@
 import { execSync } from "child_process";
 
+/**
+ * visits passed in url in default browser
+ * @param url to visit
+ */
 export async function openInBrowser(url: string) {
   switch (process.platform) {
     case "darwin":

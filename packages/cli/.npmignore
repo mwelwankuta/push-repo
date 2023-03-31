@@ -1,4 +1,7 @@
 README.md
 LICENSE
 .vscode
+node_modules
+.prettierignore
 yarn-error.log
+config.conf
