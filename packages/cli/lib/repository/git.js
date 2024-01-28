@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { execSync } from "child_process";
-import { openInBrowser } from "../utils/openBrowser.js";
+import { openInBrowser } from "../utils/open-browser";
 export class Git {
     constructor(repoUrl, originUrl, execOptions) {
         this.repoUrl = repoUrl;

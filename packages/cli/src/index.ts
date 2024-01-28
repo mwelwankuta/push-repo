@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import { authenticateUser } from "./auth/login.js";
-import { pushRepository } from "./repository/createRepository.js";
-import { getProjectName } from "./utils/processArguments.js";
-import { getTokenFromConf } from "./utils/getToken.js";
+import { authenticateUser } from "./auth/login";
+import { pushRepository } from "./repository/create-repository";
+import { getProjectName } from "./utils/process-arguments";
+import { getTokenFromConf } from "./utils/get-token";
 
 if (!getTokenFromConf()) {
   await authenticateUser();

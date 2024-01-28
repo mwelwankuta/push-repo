@@ -3,9 +3,9 @@ import chalk from "chalk";
 import type { ExecSyncOptionsWithStringEncoding } from "child_process";
 import { readdirSync, writeFileSync } from "fs";
 import { resolve } from "path";
-import { getTokenFromConf } from "../utils/getToken.js";
-import { getProtocol } from "../utils/processArguments.js";
-import { Git } from "./git.js";
+import { getTokenFromConf } from "../utils/get-token";
+import { getProtocol } from "../utils/process-arguments";
+import { Git } from "./git";
 
 const cwd = process.cwd();
 const execOptions = {

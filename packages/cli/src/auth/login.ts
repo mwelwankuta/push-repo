@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import readline from "readline";
-import { saveTokenToConf } from "../utils/getToken.js";
-import { openInBrowser } from "../utils/openBrowser.js";
+import { saveTokenToConf } from "../utils/get-token";
+import { openInBrowser } from "../utils/open-browser";
 
 const readlineInterface = readline.createInterface({
   input: process.stdin,

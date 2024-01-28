@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import type { ExecSyncOptionsWithStringEncoding } from "child_process";
 import { execSync } from "child_process";
-import { openInBrowser } from "../utils/openBrowser.js";
+import { openInBrowser } from "../utils/open-browser";
 
 /**
  * add origin, rename branch & push code

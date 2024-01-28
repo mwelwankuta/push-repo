@@ -1,27 +1,21 @@
 import chalk from "chalk";
-import http from "http";
-import url from "url";
-import { saveTokenToConf } from "../utils/getToken.js";
-import { openInBrowser } from "../utils/openBrowser.js";
+import readline from "readline";
+import { saveTokenToConf } from "../utils/get-token";
+import { openInBrowser } from "../utils/open-browser";
+const readlineInterface = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
 export async function authenticateUser() {
-    return new Promise((resolve, reject) => {
-        const server = http.createServer(async (req, res) => {
-            req.setEncoding("utf8");
-            const { access_token } = url.parse(req.url, true).query;
-            if (access_token) {
-                saveTokenToConf(access_token);
-                server.close();
-                resolve(access_token);
-            }
-            else {
-                reject({ message: " an error just occurred" });
-            }
-            res.end();
-        });
+    return new Promise((resolve) => {
         console.log(chalk.bold.white("[push repo] Opening browser..."));
-        server.listen(1230, () => {
-            openInBrowser("https://github.com/login/oauth/authorize?client_id=64dfe7b7577ebc559ecd&scope=repo");
+        readlineInterface.question("Paste access token", (token) => {
+            if (!token)
+                authenticateUser();
+            saveTokenToConf(token);
+            resolve(token);
         });
+        openInBrowser("https://github.com/login/oauth/authorize?client_id=64dfe7b7577ebc559ecd&scope=repo");
     });
 }
 //# sourceMappingURL=login.js.map

@@ -1,8 +1,11 @@
 {
   "name": "@push-repo",
   "description": "Quickly create a local git project connected to github",
-  "author": "Mwelwa Nkuta",
+  "author": "mwelwankuta",
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "scripts": {
+    "build": "tsc --project ./packages/cli/tsconfig.json"
+  }
 }
